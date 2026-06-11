@@ -10,25 +10,25 @@
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
-    /* FIFA 26 — clean light identity */
-    --bg:          #F7F6F3;
-    --surface:     #FFFFFF;
-    --ink:         #111111;
-    --ink-soft:    #555555;
-    --ink-dim:     #9A9A94;
-    --hairline:    #E5E3DD;
+    /* FIFA 26 — clean dark identity */
+    --bg:          #0C0C0E;
+    --surface:     #141417;
+    --ink:         #F2F1ED;
+    --ink-soft:    #B5B3AC;
+    --ink-dim:     #71716C;
+    --hairline:    #232328;
 
-    /* United 2026 host colors */
-    --mx-green:    #006847;
-    --ca-red:      #D52B1E;
-    --us-blue:     #0A3161;
+    /* United 2026 host colors (brightened for dark bg) */
+    --mx-green:    #00A86B;
+    --ca-red:      #E5453A;
+    --us-blue:     #4D9FE8;
 
-    --gold:        #B08A2E;
-    --gold-bg:     #FBF6E8;
-    --silver:      #8A929C;
-    --bronze:      #A66A2C;
-    --green:       #0E8C5A;
-    --red:         #D52B1E;
+    --gold:        #E8C547;
+    --gold-bg:     #1D1909;
+    --silver:      #A8B2BC;
+    --bronze:      #C8853D;
+    --green:       #2BB673;
+    --red:         #E5453A;
 
     --font-display: 'Oswald', 'Arial Narrow', Arial, sans-serif;
     --font-mono:    'JetBrains Mono', 'Courier New', monospace;
@@ -155,9 +155,9 @@
   }
 
   @keyframes pulse {
-    0%   { box-shadow: 0 0 0 0    rgba(14,140,90,0.45); }
-    70%  { box-shadow: 0 0 0 8px  rgba(14,140,90,0); }
-    100% { box-shadow: 0 0 0 0    rgba(14,140,90,0); }
+    0%   { box-shadow: 0 0 0 0    rgba(43,182,115,0.5); }
+    70%  { box-shadow: 0 0 0 8px  rgba(43,182,115,0); }
+    100% { box-shadow: 0 0 0 0    rgba(43,182,115,0); }
   }
 
   /* ── MATCHES ── */
@@ -421,8 +421,8 @@
   /* ── ERROR ── */
   .error-banner {
     display: none;
-    background: #FCEDEC;
-    border: 1px solid rgba(213,43,30,0.3);
+    background: rgba(229,69,58,0.08);
+    border: 1px solid rgba(229,69,58,0.3);
     color: var(--ca-red);
     padding: 10px 16px;
     border-radius: 10px;
@@ -440,7 +440,7 @@
   .skeleton {
     display: inline-block;
     border-radius: 5px;
-    background: linear-gradient(90deg, #EFEDE8 25%, #F9F8F5 50%, #EFEDE8 75%);
+    background: linear-gradient(90deg, #1C1C20 25%, #28282E 50%, #1C1C20 75%);
     background-size: 200% 100%;
     animation: shimmer 1.6s infinite;
     color: transparent !important;
@@ -473,7 +473,7 @@
 
 <header>
   <div class="header-left">
-    <img class="emblem" src="fifa26-emblem.svg" alt="FIFA World Cup 26">
+    <img class="emblem" src="fifa26-emblem-dark.svg" alt="FIFA World Cup 26">
     <div class="title-block">
       <div class="eyebrow">Fantasy League &middot; Standings</div>
       <h1>FIFA World Cup 26&trade;</h1>
