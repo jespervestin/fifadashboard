@@ -589,21 +589,15 @@
   fetchData();
   setInterval(fetchData, REFRESH_MS);
 
-  /* ── fixtures ── */
-  const FIXTURES_URL        = "https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json";
-  const FIXTURES_REFRESH_MS = 10 * 60_000;
-
+  /* ── fixtures (ESPN API) ── */
+  const FIXTURES_REFRESH_MS = 5 * 60_000;
   let nextMatchDate = null;
 
-  function teamStr(t)   { return typeof t === 'string' ? t : (t?.name || t?.code || '?'); }
-  function groundStr(g) { return typeof g === 'string' ? g : (g?.name ? `${g.name}${g.city ? ', '+g.city : ''}` : ''); }
-  function fmtDate(d)   { return new Date(d).toLocaleDateString('sv-SE', { weekday:'short', day:'numeric', month:'short' }); }
+  function espnDateStr(d) { return d.toISOString().slice(0,10).replace(/-/g,''); }
+  function fmtDate(d) { return new Date(d).toLocaleDateString('sv-SE', { weekday:'short', day:'numeric', month:'short' }); }
+  function fmtTime(d) { return new Date(d).toLocaleTimeString('sv-SE', { hour:'2-digit', minute:'2-digit' }); }
 
-  function renderFixtures(data) {
-    const matches  = data.matches || [];
-    const played   = matches.filter(m => m.score && m.score.ft);
-    const upcoming = matches.filter(m => !m.score);
-
+  function renderFixtures(events) {
     const lastTeamsEl = document.getElementById('lastMatchTeams');
     const lastMetaEl  = document.getElementById('lastMatchMeta');
     const lastGrpEl   = document.getElementById('lastMatchGroup');
@@ -611,43 +605,69 @@
     const nextMetaEl  = document.getElementById('nextMatchMeta');
     const nextGrpEl   = document.getElementById('nextMatchGroup');
 
+    const sorted   = [...events].sort((a,b) => new Date(a.date) - new Date(b.date));
+    const played   = sorted.filter(e => e.status.type.completed);
+    const live     = sorted.filter(e => e.status.type.state === 'in');
+    const upcoming = sorted.filter(e => !e.status.type.completed && e.status.type.state !== 'in');
+
+    /* ── last result ── */
     if (played.length > 0) {
-      const l = played[played.length - 1];
-      const [s1, s2] = l.score.ft;
+      const ev   = played[played.length - 1];
+      const comp = ev.competitions[0];
+      const home = comp.competitors.find(c => c.homeAway === 'home') || comp.competitors[0];
+      const away = comp.competitors.find(c => c.homeAway === 'away') || comp.competitors[1];
       lastTeamsEl.innerHTML = `
-        <span class="match-team">${teamStr(l.team1)}</span>
-        <span class="match-score">${s1}&ndash;${s2}</span>
-        <span class="match-team away">${teamStr(l.team2)}</span>`;
-      lastMetaEl.textContent = fmtDate(l.date) + (groundStr(l.ground) ? ' · ' + groundStr(l.ground) : '');
-      lastGrpEl.textContent  = l.group || l.round || '';
+        <span class="match-team">${home.team.displayName}</span>
+        <span class="match-score">${home.score}&ndash;${away.score}</span>
+        <span class="match-team away">${away.team.displayName}</span>`;
+      lastMetaEl.textContent = fmtDate(ev.date) + (comp.venue?.fullName ? ' · ' + comp.venue.fullName : '');
+      lastGrpEl.textContent  = comp.notes?.[0]?.text || '';
     } else {
       lastTeamsEl.innerHTML  = `<span class="match-team">Inga matcher spelade än</span>`;
       lastMetaEl.textContent = 'Avspark 11 juni!';
       lastGrpEl.textContent  = '';
     }
 
-    if (upcoming.length > 0) {
-      const n = upcoming[0];
-      nextTeamsEl.innerHTML = `
-        <span class="match-team">${teamStr(n.team1)}</span>
-        <span class="match-vs">VS</span>
-        <span class="match-team away">${teamStr(n.team2)}</span>`;
-      nextMetaEl.textContent = fmtDate(n.date) + (n.time ? ' · ' + n.time : '') + (groundStr(n.ground) ? ' · ' + groundStr(n.ground) : '');
-      nextGrpEl.textContent  = n.group || n.round || '';
-      nextMatchDate = n.time ? new Date(`${n.date}T${n.time}`) : new Date(n.date);
+    /* ── next / live ── */
+    const next   = live[0] ?? upcoming[0];
+    const isLive = live.length > 0 && next === live[0];
+
+    if (next) {
+      const comp   = next.competitions[0];
+      const home   = comp.competitors.find(c => c.homeAway === 'home') || comp.competitors[0];
+      const away   = comp.competitors.find(c => c.homeAway === 'away') || comp.competitors[1];
+      const clock  = isLive ? ` · ${comp.status?.displayClock ?? ''}` : '';
+
+      nextTeamsEl.innerHTML = isLive
+        ? `<span class="match-team">${home.team.displayName}</span>
+           <span class="match-score" style="color:var(--ca-red)">${home.score}&ndash;${away.score}</span>
+           <span class="match-team away">${away.team.displayName}</span>`
+        : `<span class="match-team">${home.team.displayName}</span>
+           <span class="match-vs">VS</span>
+           <span class="match-team away">${away.team.displayName}</span>`;
+
+      nextMetaEl.textContent = fmtDate(next.date) + ' · ' + fmtTime(next.date) + clock + (comp.venue?.fullName ? ' · ' + comp.venue.fullName : '');
+      nextGrpEl.textContent  = isLive ? '⚽ Live' : (comp.notes?.[0]?.text || '');
+      nextMatchDate          = isLive ? null : new Date(next.date);
     } else {
       nextTeamsEl.innerHTML  = `<span class="match-team">Turneringen är klar!</span>`;
       nextMetaEl.textContent = '';
+      nextGrpEl.textContent  = '';
       nextMatchDate          = null;
     }
   }
 
   async function fetchFixtures() {
     try {
-      const res = await fetch(FIXTURES_URL);
+      const now  = new Date();
+      const from = new Date(now); from.setDate(from.getDate() - 7);
+      const to   = new Date(now); to.setDate(to.getDate() + 14);
+      const url  = `https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard?dates=${espnDateStr(from)}-${espnDateStr(to)}&limit=100`;
+      const res  = await fetch(url);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      renderFixtures(await res.json());
-    } catch {
+      const data = await res.json();
+      renderFixtures(data.events || []);
+    } catch (err) {
       document.getElementById('lastMatchTeams').innerHTML = `<span class="match-team">Matchdata ej tillgänglig</span>`;
       document.getElementById('nextMatchTeams').innerHTML = '';
     }
