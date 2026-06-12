@@ -129,35 +129,10 @@
     flex-shrink: 0;
   }
 
-  .group-name {
-    font-size: clamp(14px, 1.5vw, 24px);
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  .live-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-family: var(--font-mono);
-    font-size: clamp(9px, 0.8vw, 12px);
-    letter-spacing: 0.18em;
-    color: var(--ink-dim);
-    text-transform: uppercase;
-  }
-
-  .live-dot {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: var(--green);
-    animation: pulse 2.5s infinite;
-  }
-
-  @keyframes pulse {
-    0%   { box-shadow: 0 0 0 0    rgba(43,182,115,0.5); }
-    70%  { box-shadow: 0 0 0 8px  rgba(43,182,115,0); }
-    100% { box-shadow: 0 0 0 0    rgba(43,182,115,0); }
+  .msp-logo {
+    height: clamp(40px, 5.5vh, 72px);
+    width: auto;
+    display: block;
   }
 
   /* ── MATCHES ── */
@@ -171,13 +146,24 @@
   .match-card {
     background: var(--surface);
     border: 1px solid var(--hairline);
-    border-radius: 12px;
-    padding: clamp(10px, 1.2vh, 16px) clamp(14px, 1.5vw, 24px);
+    border-radius: 14px;
+    padding: clamp(12px, 1.6vh, 22px) clamp(16px, 1.8vw, 28px);
     display: flex;
     flex-direction: column;
-    gap: clamp(4px, 0.5vh, 7px);
+    gap: clamp(8px, 1vh, 13px);
     min-width: 0;
+    position: relative;
+    overflow: hidden;
   }
+
+  .match-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+  .match-card.result::before { background: linear-gradient(90deg, var(--green), transparent 80%); }
+  .match-card.next::before   { background: linear-gradient(90deg, var(--gold),  transparent 80%); }
 
   .match-label {
     font-family: var(--font-mono);
@@ -190,43 +176,89 @@
     align-items: center;
     color: var(--ink-dim);
   }
-  .match-card.result .match-label span:first-child { color: var(--green); }
-  .match-card.next   .match-label span:first-child { color: var(--us-blue); }
+  .match-card.result .match-label .lbl { color: var(--green); }
+  .match-card.next   .match-label .lbl { color: var(--gold-soft); }
 
+  .match-badge {
+    font-family: var(--font-mono);
+    font-size: clamp(8px, 0.68vw, 10px);
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    padding: 2px 7px;
+    border-radius: 999px;
+    border: 1px solid var(--hairline);
+    color: var(--ink-dim);
+    text-transform: uppercase;
+  }
+
+  /* 3-column scoreboard grid */
   .match-teams {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    justify-content: space-between;
-    gap: clamp(6px, 0.8vw, 12px);
+    gap: clamp(8px, 1vw, 16px);
   }
 
   .match-team {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(5px, 0.5vw, 8px);
+    min-width: 0;
+  }
+  .match-team.away { align-items: center; }
+
+  .flag {
+    height: clamp(36px, 4vh, 56px);
+    width: auto;
+    border-radius: 4px;
+    flex-shrink: 0;
+    display: block;
+    object-fit: cover;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.45);
+  }
+
+  .team-name {
+    font-family: var(--font-display);
     font-weight: 600;
-    font-size: clamp(14px, 1.5vw, 23px);
+    font-size: clamp(14px, 1.55vw, 24px);
     text-transform: uppercase;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    flex: 1;
-    min-width: 0;
+    color: var(--ink-soft);
+    letter-spacing: 0.01em;
   }
-  .match-team.away { text-align: right; }
+  .team-name.winner { color: var(--ink); font-weight: 700; }
+  .team-name.loser  { color: var(--ink-dim); }
+
+  .match-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    flex-shrink: 0;
+  }
 
   .match-score {
     font-family: var(--font-mono);
     font-weight: 800;
-    font-size: clamp(18px, 2vw, 32px);
+    font-size: clamp(26px, 3vw, 48px);
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
-    padding: 0 clamp(6px, 0.8vw, 12px);
+    line-height: 1;
+    letter-spacing: 0.04em;
+    color: var(--ink);
   }
+  .match-score.live { color: var(--ca-red); }
 
   .match-vs {
     font-family: var(--font-mono);
-    font-size: clamp(10px, 0.85vw, 13px);
+    font-weight: 800;
+    font-size: clamp(18px, 2.2vw, 36px);
     color: var(--ink-dim);
-    letter-spacing: 0.2em;
-    padding: 0 clamp(6px, 0.8vw, 12px);
+    letter-spacing: 0.1em;
+    line-height: 1;
   }
 
   .match-meta {
@@ -234,6 +266,7 @@
     font-size: clamp(9px, 0.75vw, 11px);
     color: var(--ink-dim);
     letter-spacing: 0.05em;
+    text-align: center;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -241,10 +274,12 @@
 
   .countdown {
     font-family: var(--font-mono);
-    font-size: clamp(10px, 0.9vw, 13px);
     font-weight: 700;
-    color: var(--us-blue);
-    letter-spacing: 0.06em;
+    font-size: clamp(13px, 1.3vw, 20px);
+    color: var(--gold);
+    letter-spacing: 0.04em;
+    text-align: center;
+    line-height: 1;
   }
 
   /* ── TABLE ── */
@@ -264,6 +299,7 @@
     display: grid;
     grid-template-columns:
       clamp(56px, 5vw, 88px)
+      minmax(120px, 22%)
       1fr
       clamp(90px, 7.5vw, 140px)
       clamp(80px, 7vw, 120px);
@@ -285,6 +321,34 @@
 
   .col-pts, .row .col-pts,
   .col-diff, .row .diff { text-align: right; }
+
+  /* ── POINTS BAR ── */
+  .pts-bar {
+    display: flex;
+    align-items: center;
+    gap: clamp(6px, 0.8vw, 12px);
+    min-width: 0;
+  }
+
+  .pts-bar-track {
+    flex: 1;
+    height: clamp(6px, 0.7vh, 10px);
+    background: var(--hairline);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .pts-bar-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: var(--ink-dim);
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 2px;
+  }
+
+  .row.p1 .pts-bar-fill { background: var(--gold); box-shadow: 0 0 8px rgba(232,197,71,0.5); }
+  .row.p2 .pts-bar-fill { background: var(--silver); }
+  .row.p3 .pts-bar-fill { background: var(--bronze); }
 
   .rows {
     flex: 1;
@@ -437,6 +501,7 @@
     .table-head, .row {
       grid-template-columns: 40px 1fr clamp(70px,21vw,95px) clamp(56px,17vw,80px);
     }
+    .pts-bar, .col-bar { display: none; }
     .matches-strip { grid-template-columns: 1fr; }
     .tagline { display: none; }
     h1 { white-space: normal; }
@@ -462,32 +527,35 @@
     </div>
   </div>
   <div class="meta">
-    <div class="group-name" id="groupName">MSP Nordics</div>
-    <div class="live-pill">
-      <span class="live-dot"></span>
-      <span>Live &middot; synkas varje minut</span>
-    </div>
+    <svg class="msp-logo" viewBox="0 0 364 478" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="MSP Nordics">
+      <path fill="#EB5E00" d="M305.093 55H58.901A3.897 3.897 0 0 0 55 58.9v246.195a3.9 3.9 0 0 0 3.9 3.901h246.2a3.9 3.9 0 0 0 3.901-3.901V58.901A3.9 3.9 0 0 0 305.1 55zm-81.209 83.578c3.215-3.807 6.549-5.834 9.9-6.029 3.038-.177 7.359.503 10.662 4.74 2.057 2.648 2.317 6.59.775 11.709-1.685 5.579-3.795 9.048-6.449 10.591-2.606 1.519-6.265-.656-9.793-3.014-3.038-2.034-5.591-4.534-7.004-6.856-.035-.059-.077-.124-.112-.184a11 11 0 0 1-.443-.839c-1.46-3.12-.657-6.43 2.458-10.112zm-51.681-4.699c1.821-2.181 5.828-5.733 12.294-5.047 3.422.366 6.177 2.636 8.422 6.938 1.561 2.991 3.564 7.441 2.95 11.496-.698 4.592-4.575 7.512-6.821 8.842-3.067 1.814-6.283 1.832-10.42.047-4.45-1.915-7.11-4.971-8.375-9.616-1.365-5.006-.668-9.504 1.962-12.66zm-53.099-.366c.816-2.069 3.251-6.655 8.748-6.655.348 0 .709.017 1.081.059 4.504.461 7.82 5.768 9.398 8.889 2.884 5.709 3.735 10.278 2.47 13.221-1.377 3.192-5.538 4.764-11.726 4.409-4.108-.23-6.945-2.518-8.925-7.204-2.021-4.782-2.393-9.297-1.046-12.714zm161.225 4.208c-.142 2.931-.881 5.685-1.537 8.132-.313 1.171-.609 2.27-.81 3.292-.62 3.151-3.416 7.122-6.655 11.72l-.715 1.017c-1.578 2.252-3.227 4.728-4.681 6.915l-.059.089c-1.33 1.997-2.701 4.06-4.025 5.963-3.807 5.479-6.082 10.917-6.242 14.906-.124 3.144.355 7.022.905 11.513q.143 1.18.295 2.424c.225 1.879.207 3.906.183 6.069-.023 2.542-.053 5.172.32 7.867.289 2.098.715 4.232 1.134 6.306.485 2.406.987 4.888 1.259 7.329.16 1.425.343 2.843.532 4.321.42 3.274.816 6.365.952 9.391.148 3.227-.396 6.318-.928 9.338-.254 1.454-.497 2.831-.656 4.197-.574 4.911-1.117 9.551-3.405 12.145-1.028 1.165-3.144 1.803-5.402 1.626-2.175-.178-3.96-1.052-4.775-2.341-.999-1.584-2.116-5.597-2.341-10.981-.089-2.057.177-4.338.437-6.549.219-1.867.444-3.8.473-5.674.048-3.221-.36-6.211-.685-8.611-.207-1.525-.384-2.843-.379-3.723.095-7.542-.443-12.17-1.767-20.332-1.034-6.353-4.096-10.13-9.374-11.555-2.636-.709-5.881-1.034-9.634-.969-1.631.03-3.38.13-5.201.307-4.634.444-10.503 1.242-14.752 3.482-3.582 1.891-7.613 5.874-6.454 14.131.585 4.167.632 7.595.679 10.911.018 1.288.036 2.547.089 3.818.077 2.056.449 4.072.845 6.211.491 2.672 1.005 5.432 1.023 8.665 0 .609.017 1.294.035 2.051.065 2.772.142 6.217-.331 9.238-.609 3.877-2.872 6.56-5.904 6.992-5.923.851-8.098-.751-9.28-6.845-.437-2.263-.295-5.035-.142-7.979.083-1.572.166-3.197.178-4.887.012-2.211-.302-4.492-.603-6.691-.296-2.169-.603-4.415-.591-6.56.006-1.661.124-3.363.23-5.03.195-2.955.385-5.745.03-8.458-.798-6.164-2.305-10.567-4.598-13.457-3.34-4.203-8.683-4.226-13.854-4.25-1.963-.012-3.819-.018-5.479-.26-4.717-.686-8.795-.892-12.465-.632l-.379.023c-5.213.361-9.332.65-12.311 2.926-3.298 2.524-5.331 6.389-6.212 11.826l-.065.414c-.615 3.765-1.306 8.026-.91 12.388.354 3.925 1.229 7.11 1.998 9.924.561 2.045 1.087 3.977 1.306 5.833.236 2.01.307 4.055.378 6.224.095 2.813.207 5.999.697 9.752.349 2.653.213 7.399-1.595 9.574-.597.715-1.301 1.076-2.211 1.123-4.929.249-9.084-2.299-11.401-6.974-1.844-3.729-3.221-9.054-3.765-14.616-.337-3.416.189-6.844.656-9.87.331-2.14.615-3.984.562-5.568-.048-1.554-.166-3.109-.278-4.616-.201-2.689-.414-5.467-.213-8.156.154-2.08.106-4.161.059-6.182-.047-2.258-.1-4.587.136-6.797.207-1.921.822-3.913 1.419-5.845.691-2.246 1.412-4.563 1.578-6.974.614-8.783-.958-12.601-7.294-17.743-3.316-2.695-6.111-5.367-8.588-7.737a304 304 0 0 0-2.352-2.234c-3.333-3.115-5.437-6.147-7.323-8.854a74 74 0 0 0-1.797-2.517c-4.953-6.537-6.182-9.528-6.56-12.229-.32-2.281-.479-6.749-.1-11.59.283-3.635 1.418-7.731 2.464-11.289.993-3.368 2.736-6.672 5.195-9.817 1.69-2.163 5.219-4.291 8.978-5.419 1.596-.479 2.849-.692 3.854-.692 2.287 0 3.25 1.123 3.871 2.861 1.141 3.185-.101 5.951-3.806 8.457-.45.302-1.07.556-1.809.851-2.53 1.023-6.354 2.571-7.837 8.937-.538 2.287-.237 4.994.136 8.422.165 1.531.354 3.268.49 5.148.243 3.452 1.2 8.505 6.75 12.53 2.252 1.631 5.195 2.399 8.612 3.292 1.383.36 2.955.768 4.574 1.276 1.224.385 2.506.94 3.866 1.525 2.642 1.141 5.632 2.429 9.137 2.896 4.196.556 9.025.733 13.624.846 3.386.076 6.862.732 10.544 1.424 1.081.201 2.175.408 3.286.603 2.346.413 4.776.532 7.122.644 2.382.118 4.847.236 7.187.662 1.206.219 2.406.455 3.611.697l.142.03c3.428.68 6.969 1.383 10.527 1.655 4.716.36 9.297.402 13.972.419 2.299.006 4.61.178 6.856.343 2.305.166 4.681.349 7.027.337 1.815-.006 3.659-.083 5.284-.148 2.926-.124 5.692-.236 8.423-.017 5.053.402 9.379-.325 12.583-1.005 4.409-.934 7.849-3.068 10.881-4.953l.502-.313a90 90 0 0 1 3.086-1.797c2.854-1.613 5.555-3.132 7.435-5.372 2.878-3.423 4.344-6.998 5.313-9.362.29-.716.544-1.33.745-1.708 1.625-3.068 2.039-7.069 1.289-12.607-.503-3.718-1.862-7.654-4.037-11.697-2.394-4.444-4.675-8.245-8.381-9.716-2.695-1.07-4.888-1.247-6.821-1.401-2.234-.177-4.001-.319-6.164-1.726-.804-.52-1.076-1.389-.84-2.671.461-2.524 2.938-5.615 4.805-6.017 4.735-1.01 8.275.06 11.112 1.241 3.919 1.631 7.045 3.771 9.557 6.531a161 161 0 0 1 2.589 2.926l.077.088c1.802 2.063 3.664 4.197 5.697 6.183 2.601 2.547 4.563 5.762 5.828 9.562 1.111 3.346 1.578 7.128 1.377 11.26z"/>
+      <path fill="#FBFBF7" d="M58.095 325.722h8.813c.112 0 .216.074.246.179l10.655 31.898a.264.264 0 0 0 .5 0l10.595-31.898a.26.26 0 0 1 .246-.179h8.813c.142 0 .262.119.262.261v39.026c0 .142-.12.261-.261.261h-5.07a.264.264 0 0 1-.262-.261v-32.278c0-.298-.417-.366-.514-.082l-11.013 32.442a.26.26 0 0 1-.246.179h-5.674a.26.26 0 0 1-.247-.179l-11.013-31.905c-.096-.284-.507-.209-.507.082v31.734a.264.264 0 0 1-.26.261h-5.07a.265.265 0 0 1-.262-.261v-39.019c0-.142.12-.261.261-.261zm47.614 26.221h5.071c.149 0 .261.126.253.276-.194 5.323 3.743 8.656 10.409 8.656 5.764 0 9.38-2.371 9.38-6.442 0-10.342-24.576-2.319-24.576-17.574 0-7.345 5.824-11.863 14.525-11.863 9.686 0 15.651 5.599 14.503 13.615a.27.27 0 0 1-.269.231h-5.055a.26.26 0 0 1-.254-.313c.925-5.294-2.945-8.389-9.044-8.389-5.197 0-8.702 2.26-8.702 6.271 0 10.282 24.636 2.543 24.636 17.627 0 7.687-6.383 11.982-15.196 11.982-9.954 0-16.426-5.592-15.949-13.816a.27.27 0 0 1 .268-.254zm37.605-25.96c0-.142.119-.261.261-.261h17.365c8.195 0 12.825 4.011 12.825 11.356s-4.63 11.527-12.884 11.527h-11.714a.264.264 0 0 0-.261.261v16.143a.264.264 0 0 1-.261.261h-5.07a.264.264 0 0 1-.261-.261zm17.626 17.537c4.519 0 7.062-2.319 7.062-6.442s-2.483-6.271-7.062-6.271h-11.773a.264.264 0 0 0-.261.261v12.191c0 .142.119.261.261.261zM58.02 375.258h7.955c.07 0 .133.037.17.101L84.829 408.6c.098.174.365.104.365-.094v-33.05c0-.106.088-.194.195-.194h5.414c.106 0 .195.088.195.194v40.632a.196.196 0 0 1-.195.195h-7.838a.2.2 0 0 1-.17-.1l-18.8-33.591c-.098-.174-.365-.107-.365.094v33.399a.196.196 0 0 1-.195.195H58.02a.196.196 0 0 1-.195-.195v-40.632c0-.106.088-.195.195-.195m38.258 20.452c0-12.424 7.677-21.212 19.691-21.212 12.015 0 19.631 8.791 19.631 21.212 0 12.422-7.619 21.331-19.631 21.331-12.011 0-19.69-8.848-19.69-21.331m33.287.058c0-9.258-5.097-15.822-13.596-15.822s-13.653 6.506-13.653 15.764c0 9.259 5.097 15.88 13.653 15.88s13.596-6.506 13.596-15.822m11.916-20.315c0-.106.088-.194.194-.194h18.383c8.791 0 13.654 4.16 13.654 11.016 0 4.784-2.436 8.021-6.719 9.651a.192.192 0 0 0-.036.344c5.17 3.3 8.696 10.438 8.744 19.812 0 .11-.088.198-.194.198h-5.414a.19.19 0 0 1-.192-.191c-.033-8.496-3.279-17.681-10.606-17.681h-11.82a.196.196 0 0 0-.194.195v17.486a.196.196 0 0 1-.195.194h-5.414a.195.195 0 0 1-.194-.194v-40.636zm18.52 17.739c5.04 0 7.734-2.111 7.734-6.272s-2.752-6.387-7.734-6.387H147.48a.196.196 0 0 0-.195.194v12.27c0 .106.088.195.195.195zm22.29-17.739c0-.106.088-.194.195-.194h15.159c11.603 0 18.985 8.087 18.985 20.509s-7.09 20.509-18.927 20.509h-15.217a.196.196 0 0 1-.195-.195zm15.296 35.553c8.203 0 13.067-6.034 13.067-15.296s-4.806-15.177-13.067-15.177h-9.298a.196.196 0 0 0-.195.194v30.084c0 .107.089.195.195.195zm24.488-35.747h5.414c.106 0 .195.088.195.194v40.633a.196.196 0 0 1-.195.194h-5.414a.196.196 0 0 1-.195-.194v-40.633c0-.106.089-.194.195-.194m10.508 20.451c0-12.716 7.911-21.212 19.63-21.212 11.041 0 17.097 7.613 18.027 16.252a.195.195 0 0 1-.194.215h-5.582a.19.19 0 0 1-.191-.179c-.417-5.362-4.407-10.84-12.002-10.84-8.498 0-13.654 6.506-13.654 15.764 0 9.259 5.156 15.88 13.654 15.88 6.789 0 10.746-4.477 11.807-9.632a.19.19 0 0 1 .189-.155h5.767a.2.2 0 0 1 .194.228c-1.32 8.197-7.677 15.01-18.015 15.01-11.719 0-19.63-8.614-19.63-21.331m48.038-9.377c0-4.161 3.635-6.506 9.024-6.506 5.39 0 9.323 2.479 9.511 6.801a.194.194 0 0 0 .192.189l5.396-.292a.2.2 0 0 0 .197-.195c.022-6.919-6.126-11.832-15.18-11.832-9.055 0-15.059 4.687-15.059 12.307 0 15.822 25.491 7.5 25.491 18.225 0 4.218-3.75 6.679-9.727 6.679-6.947 0-11.034-4.064-10.791-9.642a.194.194 0 0 0-.192-.204h-5.414a.2.2 0 0 0-.197.183c-.536 8.58 6.18 14.992 16.537 14.992 9.143 0 15.764-4.453 15.764-12.425 0-15.646-25.549-7.616-25.549-18.283z"/>
+    </svg>
   </div>
 </header>
 
 <div class="matches-strip">
   <div class="match-card result">
     <div class="match-label">
-      <span>Senaste resultatet</span>
+      <span class="lbl">Senaste resultatet</span>
       <span id="lastMatchGroup"></span>
     </div>
     <div class="match-teams" id="lastMatchTeams">
-      <span class="match-team skeleton" style="width:150px">&nbsp;</span>
+      <div class="match-team"><div class="skeleton" style="width:120px;height:22px"></div></div>
+      <div class="match-center"><div class="match-score skeleton" style="width:80px;height:36px"></div></div>
+      <div class="match-team away"><div class="skeleton" style="width:120px;height:22px"></div></div>
     </div>
     <div class="match-meta" id="lastMatchMeta"></div>
   </div>
   <div class="match-card next">
     <div class="match-label">
-      <span>N&auml;sta match</span>
+      <span class="lbl">N&auml;sta match</span>
       <span id="nextMatchGroup"></span>
     </div>
     <div class="match-teams" id="nextMatchTeams">
-      <span class="match-team skeleton" style="width:150px">&nbsp;</span>
+      <div class="match-team"><div class="skeleton" style="width:120px;height:22px"></div></div>
+      <div class="match-center"><div class="match-vs skeleton" style="width:60px;height:30px"></div></div>
+      <div class="match-team away"><div class="skeleton" style="width:120px;height:22px"></div></div>
     </div>
     <div class="match-meta" id="nextMatchMeta"></div>
     <div class="countdown" id="countdown"></div>
@@ -498,6 +566,7 @@
   <div class="table-head">
     <div class="col-pos">Plac.</div>
     <div class="col-name">Spelare</div>
+    <div class="col-bar"></div>
     <div class="col-pts">Po&auml;ng</div>
     <div class="col-diff">Diff</div>
   </div>
@@ -516,20 +585,19 @@
 
   const rowsEl      = document.getElementById('rows');
   const lastUpdEl   = document.getElementById('lastUpdated');
-  const groupNameEl = document.getElementById('groupName');
   const errorBanner = document.getElementById('errorBanner');
 
   /* rank tracking via localStorage — arrows show movement since last visit */
   function loadRanks()       { try { return JSON.parse(localStorage.getItem(RANKS_KEY) || '{}'); } catch { return {}; } }
-  function saveRanks(sorted) { const r = {}; sorted.forEach((m,i) => r[pid(m)] = i+1); localStorage.setItem(RANKS_KEY, JSON.stringify(r)); }
+  function saveRanks(sorted, places) { const r = {}; sorted.forEach((m,i) => r[pid(m)] = places[i]); localStorage.setItem(RANKS_KEY, JSON.stringify(r)); }
   function pid(m)            { return m.firstName + m.lastName; }
 
   function arrowHtml(key, place, prev) {
-    if (!prev[key]) return '<span class="rank-arrow same">&#8212;</span>';
+    if (!prev[key]) return '';
     const d = prev[key] - place;
     if (d > 0) return '<span class="rank-arrow up">&#9650;</span>';
     if (d < 0) return '<span class="rank-arrow down">&#9660;</span>';
-    return '<span class="rank-arrow same">&#8212;</span>';
+    return '';
   }
 
   function render(members) {
@@ -541,31 +609,43 @@
     const prev      = loadRanks();
     const leaderPts = sorted[0]?.points ?? 0;
 
+    /* dense ranking baserat på unika poängnivåer (1,1,2,2,3) */
+    const uniquePts = [...new Set(sorted.map(m => m.points))].sort((a,b) => b-a);
+    const places    = sorted.map(m => uniquePts.indexOf(m.points) + 1);
+
     rowsEl.innerHTML = '';
     sorted.forEach((m, i) => {
-      const place = i + 1;
+      const place = places[i];
+      const tied  = sorted.filter(x => x.points === m.points).length > 1;
       const key   = pid(m);
       const name  = m.nickname || `${m.firstName} ${m.lastName}`;
-      const medal = ['', '1','2','3'][place] ?? '';
-
-      const diffHtml = place === 1
+      const diffHtml = place === 1 && !tied
         ? 'Ledare'
-        : `&minus;${leaderPts - m.points} p`;
+        : place === 1 && tied
+          ? 'Delad ledning'
+          : `&minus;${leaderPts - m.points} p`;
+
+      const pct = leaderPts > 0 ? Math.round((m.points / leaderPts) * 100) : 0;
 
       const row = document.createElement('div');
       row.className = 'row' + (place <= 3 ? ` p${place}` : '');
       row.innerHTML = `
-        <div class="position">${medal || place}${arrowHtml(key, place, prev)}</div>
+        <div class="position">${place}${arrowHtml(key, place, prev)}</div>
         <div class="player">
           <div class="nickname">${name}</div>
           ${m.nickname ? `<div class="fullname">${m.firstName} ${m.lastName}</div>` : ''}
+        </div>
+        <div class="pts-bar">
+          <div class="pts-bar-track">
+            <div class="pts-bar-fill" style="width:${pct}%"></div>
+          </div>
         </div>
         <div class="pts">${m.points}<span class="pts-unit">p</span></div>
         <div class="diff">${diffHtml}</div>`;
       rowsEl.appendChild(row);
     });
 
-    saveRanks(sorted);
+    saveRanks(sorted, places);
   }
 
   async function fetchData() {
@@ -575,7 +655,6 @@
       const data = await res.json();
       if (data.error) throw new Error(data.error);
       if (!Array.isArray(data.members)) throw new Error('Oväntat svar');
-      if (data.group?.name) groupNameEl.textContent = data.group.name;
       render(data.members);
       lastUpdEl.textContent = `Uppdaterad ${new Date().toLocaleTimeString('sv-SE')}`;
       errorBanner.classList.remove('show');
@@ -592,6 +671,60 @@
   /* ── fixtures (ESPN API) ── */
   const FIXTURES_REFRESH_MS = 5 * 60_000;
   let nextMatchDate = null;
+
+  const TEAM_FLAGS = {
+    // CONCACAF
+    'United States':'us','USA':'us','Canada':'ca','Mexico':'mx',
+    'Costa Rica':'cr','Panama':'pa','Honduras':'hn','Jamaica':'jm',
+    'El Salvador':'sv','Trinidad & Tobago':'tt','Trinidad and Tobago':'tt',
+    'Cuba':'cu','Haiti':'ht','Guatemala':'gt','Nicaragua':'ni',
+    // CONMEBOL
+    'Argentina':'ar','Brazil':'br','Colombia':'co','Uruguay':'uy',
+    'Ecuador':'ec','Venezuela':'ve','Chile':'cl','Paraguay':'py',
+    'Bolivia':'bo','Peru':'pe',
+    // UEFA
+    'Germany':'de','France':'fr','Spain':'es','England':'gb-eng',
+    'Portugal':'pt','Netherlands':'nl','Italy':'it','Belgium':'be',
+    'Croatia':'hr','Austria':'at','Switzerland':'ch',
+    'Czech Republic':'cz','Czechia':'cz','Turkey':'tr','Serbia':'rs',
+    'Slovenia':'si','Ukraine':'ua','Scotland':'gb-sct','Hungary':'hu',
+    'Romania':'ro','Denmark':'dk','Sweden':'se','Norway':'no',
+    'Poland':'pl','Iceland':'is','Greece':'gr','Albania':'al',
+    'Slovakia':'sk','Wales':'gb-wls','Ireland':'ie',
+    'Bosnia-Herzegovina':'ba','Bosnia & Herzegovina':'ba','Bosnia and Herzegovina':'ba',
+    'North Macedonia':'mk','Georgia':'ge','Kosovo':'xk','Finland':'fi',
+    'Israel':'il','Bulgaria':'bg','Montenegro':'me','Belarus':'by',
+    'Lithuania':'lt','Latvia':'lv','Estonia':'ee','Armenia':'am',
+    'Azerbaijan':'az','Cyprus':'cy','Luxembourg':'lu','Northern Ireland':'gb-nir',
+    // CAF
+    'Morocco':'ma','Senegal':'sn','Nigeria':'ng','Cameroon':'cm',
+    'Egypt':'eg','South Africa':'za','Tunisia':'tn','Algeria':'dz',
+    'Mali':'ml',"Ivory Coast":'ci',"Côte d'Ivoire":'ci',"Cote d'Ivoire":'ci',
+    'Ghana':'gh','DR Congo':'cd','Congo DR':'cd','Guinea':'gn',
+    'Tanzania':'tz','Ethiopia':'et','Angola':'ao','Zambia':'zm',
+    'Mozambique':'mz','Uganda':'ug','Cape Verde':'cv','Comoros':'km',
+    'Gabon':'ga','Burkina Faso':'bf','Benin':'bj','Mauritania':'mr',
+    'Namibia':'na','Zimbabwe':'zw','Kenya':'ke','Rwanda':'rw',
+    'Sudan':'sd','Libya':'ly',
+    // AFC
+    'Japan':'jp','South Korea':'kr','Korea Republic':'kr',
+    'Australia':'au','Iran':'ir','Saudi Arabia':'sa','Qatar':'qa',
+    'Uzbekistan':'uz','Iraq':'iq','Jordan':'jo','Indonesia':'id',
+    'United Arab Emirates':'ae','UAE':'ae','Bahrain':'bh',
+    'China':'cn','China PR':'cn','Oman':'om','Kuwait':'kw',
+    'Palestine':'ps','Thailand':'th','Philippines':'ph',
+    'Kyrgyzstan':'kg','Tajikistan':'tj','Vietnam':'vn',
+    'North Korea':'kp','Korea DPR':'kp','Lebanon':'lb','Syria':'sy',
+    // OFC
+    'New Zealand':'nz','Fiji':'fj','Papua New Guinea':'pg',
+    'Solomon Islands':'sb','Vanuatu':'vu',
+  };
+
+  function flagImg(name) {
+    const code = TEAM_FLAGS[name];
+    if (!code) return '';
+    return `<img class="flag" src="https://flagcdn.com/w160/${code}.png" alt="${name}" loading="lazy">`;
+  }
 
   function espnDateStr(d) { return d.toISOString().slice(0,10).replace(/-/g,''); }
   function fmtDate(d) { return new Date(d).toLocaleDateString('sv-SE', { weekday:'short', day:'numeric', month:'short' }); }
@@ -616,10 +749,13 @@
       const comp = ev.competitions[0];
       const home = comp.competitors.find(c => c.homeAway === 'home') || comp.competitors[0];
       const away = comp.competitors.find(c => c.homeAway === 'away') || comp.competitors[1];
+      const hs = parseInt(home.score), as = parseInt(away.score);
+      const homeCls = hs > as ? 'winner' : hs < as ? 'loser' : '';
+      const awayCls = as > hs ? 'winner' : as < hs ? 'loser' : '';
       lastTeamsEl.innerHTML = `
-        <span class="match-team">${home.team.displayName}</span>
-        <span class="match-score">${home.score}&ndash;${away.score}</span>
-        <span class="match-team away">${away.team.displayName}</span>`;
+        <div class="match-team">${flagImg(home.team.displayName)}<span class="team-name ${homeCls}">${home.team.displayName}</span></div>
+        <div class="match-center"><div class="match-score">${home.score}&thinsp;&ndash;&thinsp;${away.score}</div></div>
+        <div class="match-team away">${flagImg(away.team.displayName)}<span class="team-name ${awayCls}">${away.team.displayName}</span></div>`;
       lastMetaEl.textContent = fmtDate(ev.date) + (comp.venue?.fullName ? ' · ' + comp.venue.fullName : '');
       lastGrpEl.textContent  = comp.notes?.[0]?.text || '';
     } else {
@@ -639,12 +775,12 @@
       const clock  = isLive ? ` · ${comp.status?.displayClock ?? ''}` : '';
 
       nextTeamsEl.innerHTML = isLive
-        ? `<span class="match-team">${home.team.displayName}</span>
-           <span class="match-score" style="color:var(--ca-red)">${home.score}&ndash;${away.score}</span>
-           <span class="match-team away">${away.team.displayName}</span>`
-        : `<span class="match-team">${home.team.displayName}</span>
-           <span class="match-vs">VS</span>
-           <span class="match-team away">${away.team.displayName}</span>`;
+        ? `<div class="match-team">${flagImg(home.team.displayName)}<span class="team-name">${home.team.displayName}</span></div>
+           <div class="match-center"><div class="match-score live">${home.score}&thinsp;&ndash;&thinsp;${away.score}</div></div>
+           <div class="match-team away">${flagImg(away.team.displayName)}<span class="team-name">${away.team.displayName}</span></div>`
+        : `<div class="match-team">${flagImg(home.team.displayName)}<span class="team-name">${home.team.displayName}</span></div>
+           <div class="match-center"><div class="match-vs">VS</div></div>
+           <div class="match-team away">${flagImg(away.team.displayName)}<span class="team-name">${away.team.displayName}</span></div>`;
 
       nextMetaEl.textContent = fmtDate(next.date) + ' · ' + fmtTime(next.date) + clock + (comp.venue?.fullName ? ' · ' + comp.venue.fullName : '');
       nextGrpEl.textContent  = isLive ? '⚽ Live' : (comp.notes?.[0]?.text || '');
